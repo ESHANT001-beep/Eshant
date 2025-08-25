@@ -1,0 +1,20 @@
+FROM php:8.1-apache
+
+# Enable Apache rewrite
+RUN a2enmod rewrite
+
+# Copy files
+WORKDIR /var/www/html
+COPY . .
+
+# File permissions
+RUN chmod 666 users.json error.log
+
+# Install composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Expose port
+EXPOSE 10000
+
+# Start Apache and bot loop
+CMD service apache2 start && php index.php
